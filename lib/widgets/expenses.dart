@@ -27,6 +27,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _addExpense() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (context) => NewExpense(onAddExpense: _addNewExpense),
@@ -66,6 +67,11 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    print('width: $width');
+    print('height: $height');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter Expenses'),
@@ -73,14 +79,23 @@ class _ExpensesState extends State<Expenses> {
           IconButton(onPressed: _addExpense, icon: const Icon(Icons.add)),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: expenses),
-          Expanded(
-              child: ExpensesList(
-                  expenses: expenses, onRemoveExpense: _removeExpense)),
-        ],
-      ),
+      body: height > width
+          ? Column(
+              children: [
+                Chart(expenses: expenses),
+                Expanded(
+                    child: ExpensesList(
+                        expenses: expenses, onRemoveExpense: _removeExpense)),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: Chart(expenses: expenses)),
+                Expanded(
+                    child: ExpensesList(
+                        expenses: expenses, onRemoveExpense: _removeExpense)),
+              ],
+            ),
     );
   }
 }
